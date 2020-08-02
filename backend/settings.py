@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -170,5 +170,8 @@ django_heroku.settings(locals())
 
 import dj_database_url
 
-DATABASES["default"] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+DATABASE_URL = os.environ["DATABASE_URL"]
 
+conn = psycopg2.connect(DATABASE_URL, sslmode="require")
+DATABASES["default"] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+# DATABASES = {"default": dj_database_url.config(default=config("DATABASE_URL"))}
