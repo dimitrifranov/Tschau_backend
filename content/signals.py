@@ -4,7 +4,7 @@ from django.dispatch import receiver
 
 from content.models import Post, PostLike, Notification
 
-
+import os
 import requests
 import json
 
