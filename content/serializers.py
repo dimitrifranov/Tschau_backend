@@ -38,7 +38,7 @@ class PostSerializer(serializers.ModelSerializer):
     likes = PostLikeSerializer(many=True, read_only=True)
     creator_name = serializers.CharField(source="creator.username", read_only=True)
     group_name = serializers.CharField(source="group.name", read_only=True)
-    profile_pic = serializers.FileField(source="creator.username", read_only=True)
+    profile_pic = serializers.FileField(source="creator.profile_picture", read_only=True)
 
     class Meta:
         model = Post
