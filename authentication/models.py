@@ -53,10 +53,10 @@ def save_user_profile(sender, instance, **kwargs):
 class Follow(models.Model):
 
     user_from = models.ForeignKey(
-        User, related_name=_("follower"), on_delete=models.CASCADE
+        User, related_name=_("following"), on_delete=models.CASCADE
     )
     user_to = models.ForeignKey(
-        User, related_name=_("following"), on_delete=models.CASCADE
+        User, related_name=_("follower"), on_delete=models.CASCADE
     )
 
     class Meta:
