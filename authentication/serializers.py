@@ -30,8 +30,9 @@ class UserSerializer(UserDetailsSerializer):
         source="profile.signal_id", required=False, allow_null=True
     )
     # posts = PostSerializer(many=True, read_only=True)
-    following = FollowSerializer(many=True, read_only=True)
     follower = FollowSerializer(many=True, read_only=True)
+    following = FollowSerializer(many=True, read_only=True)
+    
 
     class Meta(UserDetailsSerializer.Meta):
         model = User
