@@ -7,7 +7,7 @@ from authentication.serializers import (
     FollowSerializer,
 )
 
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, filters
 
 # from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope, TokenHasScope
 
@@ -17,6 +17,8 @@ class UserList(generics.ListCreateAPIView):
     # permission_classes = [permissions.IsAuthenticated, TokenHasReadWriteScope]
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["username"]
 
 
 class UserDetails(generics.RetrieveUpdateAPIView):
@@ -33,5 +35,10 @@ class GroupList(generics.ListAPIView):
 
 
 class FollowViewSet(generics.ListCreateAPIView):
+    queryset = Follow.objects.all()
+    serializer_class = FollowSerializer
+
+
+class FollowDetails(generics.RetrieveDestroyAPIView):
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
