@@ -6,6 +6,7 @@ from authentication.serializers import (
     GroupSerializer,
     FollowSerializer,
 )
+from content.serializers import PostSerializer
 
 from rest_framework import generics, permissions, filters
 
@@ -42,3 +43,12 @@ class FollowViewSet(generics.ListCreateAPIView):
 class FollowDetails(generics.RetrieveDestroyAPIView):
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
+
+
+class UserPostList(generics.ListAPIView):
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+
+    #  def get_queryset(self):
+    #     username = self.kwargs['username']
+    #     return Post.objects.filter(creator__pk=username)
