@@ -50,6 +50,6 @@ class UserPostList(generics.ListAPIView):
     serializer_class = PostSerializer
     queryset = Post.objects.all()
 
-    #  def get_queryset(self):
-    #     username = self.kwargs['username']
-    #     return Post.objects.filter(creator__pk=username)
+     def get_queryset(self):
+        pk = self.kwargs['pk']
+        return Post.objects.filter(creator__pk=pk)
