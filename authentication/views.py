@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User, Group
 from authentication.models import Follow
+from content.models import Post
 
 from authentication.serializers import (
     UserSerializer,
