@@ -69,10 +69,3 @@ class Follow(models.Model):
     def get_absolute_url(self):
         return reverse("follow_detail", kwargs={"pk": self.pk})
 
-
-# User.add_to_class(
-#     "following",
-#     models.ManyToManyField(
-#         "self", through=Follow, related_name=_("followers"), symmetrical=False
-#     ),
-# )

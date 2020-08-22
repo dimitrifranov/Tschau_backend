@@ -30,28 +30,28 @@ def create_post(sender, instance, created, **kwargs):
         notif = Notification.objects.create(content=message, user=user,)
         # print(r.text)
 
+
 @receiver(post_save, sender=Post)
 def create_post(sender, instance, created, **kwargs):
     if created:
-        message = instance.creator.username + 'hat einen neuen Beitrag geteilt.'
-        for(follower of instance.creator.follower){
+        message = instance.creator.username + "hat einen neuen Beitrag geteilt."
+        for follower in instance.creator.follower:
             signal_id = follower.profile.signal_id
-        app_id = "56c16a44-f980-41c2-8a74-b4591cc6ab35"
-        header = {"Content-Type": "application/json; charset=utf-8"}
-        payload = {
-            "app_id": app_id,
-            "include_player_ids": [signal_id],
-            "contents": {"en": message},
-        }
-        r = requests.post(
-            "https://onesignal.com/api/v1/notifications",
-            headers=header,
-            data=json.dumps(payload),
-        )
-        user = User.objects.get(pk=follower.pk)
-        notif = Notification.objects.create(content=message, user=user,)
-        }
-        
+            app_id = "56c16a44-f980-41c2-8a74-b4591cc6ab35"
+            header = {"Content-Type": "application/json; charset=utf-8"}
+            payload = {
+                "app_id": app_id,
+                "include_player_ids": [signal_id],
+                "contents": {"en": message},
+            }
+            r = requests.post(
+                "https://onesignal.com/api/v1/notifications",
+                headers=header,
+                data=json.dumps(payload),
+            )
+            user = User.objects.get(pk=follower.pk)
+            notif = Notification.objects.create(content=message, user=user,)
+
         # print(r.text)
 
 
