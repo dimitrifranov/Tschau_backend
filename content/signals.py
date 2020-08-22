@@ -8,29 +8,6 @@ import os
 import requests
 import json
 
-
-@receiver(post_save, sender=Post)
-def create_post(sender, instance, created, **kwargs):
-    if created:
-        message = "nice Post"
-        signal_id = instance.creator.profile.signal_id
-        app_id = "56c16a44-f980-41c2-8a74-b4591cc6ab35"
-        header = {"Content-Type": "application/json; charset=utf-8"}
-        payload = {
-            "app_id": app_id,
-            "include_player_ids": [signal_id],
-            "contents": {"en": message},
-        }
-        r = requests.post(
-            "https://onesignal.com/api/v1/notifications",
-            headers=header,
-            data=json.dumps(payload),
-        )
-        user = User.objects.get(pk=instance.creator.pk)
-        notif = Notification.objects.create(content=message, user=user,)
-        # print(r.text)
-
-
 @receiver(post_save, sender=Post)
 def create_post(sender, instance, created, **kwargs):
     if created:
@@ -80,7 +57,7 @@ def create_post_like(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=Comment)
 def create_comment(sender, instance, created, **kwargs):
-    if created:
+    if created && instance.creator.pk != instance.post.creator.pk:
         # print(instance)
         message = instance.creator.username + "hat deinen Beitrag kommentiert."
         signal_id = instance.post.creator.profile.signal_id
