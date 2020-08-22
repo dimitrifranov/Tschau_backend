@@ -8,6 +8,7 @@ import os
 import requests
 import json
 
+
 @receiver(post_save, sender=Post)
 def create_post(sender, instance, created, **kwargs):
     if created:
@@ -57,7 +58,7 @@ def create_post_like(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=Comment)
 def create_comment(sender, instance, created, **kwargs):
-    if created && instance.creator.pk != instance.post.creator.pk:
+    if created and instance.creator.pk != instance.post.creator.pk:
         # print(instance)
         message = instance.creator.username + "hat deinen Beitrag kommentiert."
         signal_id = instance.post.creator.profile.signal_id
