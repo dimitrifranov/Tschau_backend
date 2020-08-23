@@ -14,23 +14,25 @@ def create_post(sender, instance, created, **kwargs):
     if created:
         message = instance.creator.username + " hat einen neuen Beitrag geteilt."
         follower_ids = []
-        for follower in instance.creator.follower:
-            follower_ids.append(follower.profile.signal_id)
-            user = User.objects.get(pk=follower.pk)
+        for follower in instance.creator.follower.all():
+            if follower.user_from.profile.signal_id:
+                follower_ids.append(follower.user_from.profile.signal_id)
+            user = User.objects.get(pk=follower.user_from.pk)
             notif = Notification.objects.create(content=message, user=user,)
 
-        app_id = "56c16a44-f980-41c2-8a74-b4591cc6ab35"
-        header = {"Content-Type": "application/json; charset=utf-8"}
-        payload = {
-            "app_id": app_id,
-            "include_player_ids": [follower_ids],
-            "contents": {"en": message},
-        }
-        r = requests.post(
-            "https://onesignal.com/api/v1/notifications",
-            headers=header,
-            data=json.dumps(payload),
-        )
+        if len(follower_ids):
+            app_id = "56c16a44-f980-41c2-8a74-b4591cc6ab35"
+            header = {"Content-Type": "application/json; charset=utf-8"}
+            payload = {
+                "app_id": app_id,
+                "include_player_ids": follower_ids,
+                "contents": {"en": message},
+            }
+            r = requests.post(
+                "https://onesignal.com/api/v1/notifications",
+                headers=header,
+                data=json.dumps(payload),
+            )
 
         # print(r.text)
 
