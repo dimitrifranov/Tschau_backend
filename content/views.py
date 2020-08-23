@@ -22,6 +22,7 @@ class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     serializer_class = PostSerializer
     filter_backends = [
         filters.SearchFilter,
+        filters.OrderingFilter,
         django_filters.rest_framework.DjangoFilterBackend,
     ]
     search_fields = ["title"]
