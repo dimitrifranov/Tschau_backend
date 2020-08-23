@@ -1,6 +1,7 @@
 from django.shortcuts import render
 import json
 
+import django_filters.rest_framework
 from rest_framework import viewsets, filters
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
@@ -19,7 +20,10 @@ class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = Post.objects.all()
     # queryset += Post.comment_set.all()
     serializer_class = PostSerializer
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [
+        filters.SearchFilter,
+        django_filters.rest_framework.DjangoFilterBackend,
+    ]
     search_fields = ["title"]
 
 
