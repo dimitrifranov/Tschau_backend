@@ -12,11 +12,11 @@ import json
 @receiver(post_save, sender=Post)
 def create_post(sender, instance, created, **kwargs):
     if created:
-        message = instance.creator.username + "hat einen neuen Beitrag geteilt."
+        message = instance.creator.username + " hat einen neuen Beitrag geteilt."
         follower_ids = []
         for follower in instance.creator.follower:
             follower_ids.append(follower.profile.signal_id)
-             user = User.objects.get(pk=follower.pk)
+            user = User.objects.get(pk=follower.pk)
             notif = Notification.objects.create(content=message, user=user,)
 
         app_id = "56c16a44-f980-41c2-8a74-b4591cc6ab35"
@@ -31,7 +31,6 @@ def create_post(sender, instance, created, **kwargs):
             headers=header,
             data=json.dumps(payload),
         )
-            
 
         # print(r.text)
 
@@ -63,7 +62,7 @@ def create_post_like(sender, instance, created, **kwargs):
 def create_comment(sender, instance, created, **kwargs):
     if created and instance.creator.pk != instance.post.creator.pk:
         # print(instance)
-        message = instance.creator.username + "hat deinen Beitrag kommentiert."
+        message = instance.creator.username + " hat deinen Beitrag kommentiert."
         signal_id = instance.post.creator.profile.signal_id
         app_id = "56c16a44-f980-41c2-8a74-b4591cc6ab35"
         header = {"Content-Type": "application/json; charset=utf-8"}
