@@ -26,6 +26,7 @@ class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
     search_fields = ["title"]
     filterset_fields = ["title"]
+    ordering_fields = ["title"]
 
 
 class CommentViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
