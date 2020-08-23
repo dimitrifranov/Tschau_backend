@@ -25,6 +25,7 @@ class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         django_filters.rest_framework.DjangoFilterBackend,
     ]
     search_fields = ["title"]
+    filterset_fields = ["title"]
 
 
 class CommentViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
