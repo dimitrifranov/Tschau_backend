@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 
 class Post(models.Model):
 
-    # pub_date = models.DateTimeField(_("created"), auto_now=False, auto_now_add=True)
+    pub_date = models.DateTimeField(_("created"), auto_now=False, auto_now_add=True)
     title = models.CharField(_("Title"), max_length=50)
     creator = models.ForeignKey(
         User, verbose_name=_("creator"), related_name="posts", on_delete=models.CASCADE,
