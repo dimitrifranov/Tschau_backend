@@ -39,7 +39,10 @@ class CommentViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 class GroupViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
     search_fields = ["name"]
 
 

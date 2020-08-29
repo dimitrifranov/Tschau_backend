@@ -123,9 +123,12 @@ class Group(models.Model):
         related_name="created_groups",
         on_delete=models.CASCADE,
     )
-    # pub_date = models.DateTimeField(_("created"), auto_now=False, auto_now_add=True)
+    create_date = models.DateTimeField(_("created"), auto_now=False, auto_now_add=True)
     name = models.CharField(_("name"), max_length=50, unique=True)
     description = models.CharField(_("description"), max_length=100)
+    pic = models.FileField(
+        _("picture"), upload_to="group", max_length=100, blank=True, null=True,
+    )
 
     class Meta:
         verbose_name = _("group")

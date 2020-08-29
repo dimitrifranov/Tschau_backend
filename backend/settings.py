@@ -46,9 +46,6 @@ INSTALLED_APPS = [
     "authentication",
     "content",
     "django.contrib.sites",
-    "allauth",
-    "allauth.account",
-    "dj_rest_auth.registration",
     "django_filters",
 ]
 
