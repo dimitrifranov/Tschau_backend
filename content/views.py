@@ -6,6 +6,7 @@ from rest_framework import viewsets, filters
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from content.models import Post, Comment, CommentLike, PostLike, Group, Notification
+from authentication.models import User
 from content.serializers import (
     PostSerializer,
     CommentSerializer,
@@ -27,6 +28,31 @@ class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
     search_fields = ["title"]
     ordering_fields = ["pub_date"]
+
+
+class FeedViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    # queryset += Post.comment_set.all()
+    serializer_class = PostSerializer
+    filter_backends = [
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
+    search_fields = ["title"]
+    ordering_fields = ["pub_date"]
+
+    def get_queryset(self):
+        data = self.request.query_params.get("user")
+        # print(data)
+        # data_dict = json.loads(data)
+        user = User.objects.get(pk=data)
+        # print(user)
+        posts = set()
+        for following in user.following.all():
+            for post in following.user_to.posts.all():
+                posts.add(post.id)
+                # print(post.id)
+        return Post.objects.filter(id__in=posts)
 
 
 class CommentViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
