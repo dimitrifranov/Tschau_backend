@@ -4,7 +4,6 @@ from content.models import Post
 
 from authentication.serializers import (
     UserSerializer,
-    GroupSerializer,
     FollowSerializer,
 )
 from content.serializers import PostSerializer
@@ -29,11 +28,11 @@ class UserDetails(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
 
 
-class GroupList(generics.ListAPIView):
-    # permission_classes = [permissions.IsAuthenticated, TokenHasScope]
-    required_scopes = ["groups"]
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
+# class GroupList(generics.ListAPIView):
+#     # permission_classes = [permissions.IsAuthenticated, TokenHasScope]
+#     required_scopes = ["groups"]
+#     queryset = Group.objects.all()
+#     serializer_class = GroupSerializer
 
 
 class FollowViewSet(generics.ListCreateAPIView):

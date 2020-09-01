@@ -5,7 +5,15 @@ import django_filters.rest_framework
 from rest_framework import viewsets, filters
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
-from content.models import Post, Comment, CommentLike, PostLike, Group, Notification
+from content.models import (
+    Post,
+    Comment,
+    CommentLike,
+    PostLike,
+    Group,
+    Notification,
+    Membership,
+)
 from authentication.models import User
 from content.serializers import (
     PostSerializer,
@@ -14,6 +22,7 @@ from content.serializers import (
     PostLikeSerializer,
     GroupSerializer,
     NotificationSerializer,
+    MembershipSerializer,
 )
 
 
@@ -27,7 +36,7 @@ class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         django_filters.rest_framework.DjangoFilterBackend,
     ]
     search_fields = ["title"]
-    ordering_fields = ["pub_date"]
+    ordering_fields = ["pub_date", "likes"]
 
 
 class FeedViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
@@ -39,7 +48,7 @@ class FeedViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         filters.OrderingFilter,
     ]
     search_fields = ["title"]
-    ordering_fields = ["pub_date"]
+    ordering_fields = ["pub_date", "likes"]
 
     def get_queryset(self):
         data = self.request.query_params.get("user")
@@ -51,7 +60,7 @@ class FeedViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         for following in user.following.all():
             for post in following.user_to.posts.all():
                 posts.add(post.id)
-                # print(post.id)
+                # print(posts)
         return Post.objects.filter(id__in=posts)
 
 
@@ -91,3 +100,9 @@ class NotificationViewSet(viewsets.ModelViewSet):
         data_dict = json.loads(data)
         # print(data_dict["user"])
         return Notification.objects.filter(user=data_dict["user"])
+
+
+class MembershipViewSet(viewsets.ModelViewSet):
+    queryset = Membership.objects.all()
+    serializer_class = MembershipSerializer
+

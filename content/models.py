@@ -2,6 +2,7 @@ from django.db import models
 
 from django.utils.translation import gettext as _
 from django.urls import reverse
+
 from django.contrib.auth.models import User
 
 
@@ -156,3 +157,23 @@ class Notification(models.Model):
 
     def get_absolute_url(self):
         return reverse("notification_detail", kwargs={"pk": self.pk})
+
+
+class Membership(models.Model):
+
+    user = models.ForeignKey(
+        User, related_name=_("joined_groups"), on_delete=models.CASCADE
+    )
+    group = models.ForeignKey(
+        "content.Group", related_name=_("group_members"), on_delete=models.CASCADE
+    )
+
+    class Meta:
+        verbose_name = _("membership")
+        verbose_name_plural = _("memberships")
+
+    def __str__(self):
+        return "{} is a member of {}".format(self.user, self.group)
+
+    def get_absolute_url(self):
+        return reverse("membership_detail", kwargs={"pk": self.pk})

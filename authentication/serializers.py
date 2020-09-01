@@ -1,7 +1,8 @@
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 
 from rest_framework import serializers
 from dj_rest_auth.serializers import UserDetailsSerializer
+from content.serializers import MembershipSerializer
 
 from django.contrib.auth.hashers import make_password
 
@@ -18,6 +19,14 @@ class FollowSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+# class GroupSerializer(serializers.ModelSerializer):
+#     members = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True)
+
+#     class Meta:
+#         model = Group
+#         fields = ("name", "members")
+
+
 class UserSerializer(UserDetailsSerializer):
     bio = serializers.CharField(source="profile.bio", required=False, allow_null=True)
     birth_date = serializers.DateField(
@@ -29,10 +38,11 @@ class UserSerializer(UserDetailsSerializer):
     signal_id = serializers.CharField(
         source="profile.signal_id", required=False, allow_null=True
     )
+    # groups = GroupSerializer(many=True)
     # posts = PostSerializer(many=True, read_only=True)
     follower = FollowSerializer(many=True, read_only=True)
     following = FollowSerializer(many=True, read_only=True)
-    
+    joined_groups = MembershipSerializer(many=True, read_only=True)
 
     class Meta(UserDetailsSerializer.Meta):
         model = User
@@ -45,6 +55,7 @@ class UserSerializer(UserDetailsSerializer):
             "signal_id",
             "following",
             "follower",
+            "joined_groups",
         )
         # depth = 1
         # extra_kwargs = {"password": {"write_only": True}}
@@ -90,8 +101,3 @@ class UserSerializer(UserDetailsSerializer):
         profile.save()
         return instance
 
-
-class GroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Group
-        fields = ("name",)

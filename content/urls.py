@@ -6,6 +6,7 @@ from rest_framework_extensions.routers import ExtendedDefaultRouter as DefaultRo
 router = DefaultRouter()
 
 router.register(r"notifications", views.NotificationViewSet, basename="notification")
+router.register(r"memberships", views.MembershipViewSet, basename="membership")
 router.register(r"feed", views.FeedViewSet, basename="feed")
 groups_routes = router.register(r"groups", views.GroupViewSet, basename="group")
 posts_routes = groups_routes.register(
