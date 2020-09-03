@@ -38,7 +38,13 @@ class UserSerializer(UserDetailsSerializer):
     signal_id = serializers.CharField(
         source="profile.signal_id", required=False, allow_null=True
     )
-    email = serializers.EmailField(source="profile.email",)
+    email = serializers.EmailField(
+        source="profile.email", required=False, allow_null=True
+    )
+    follow_post_notifs = serializers.BooleanField(source="profile.follow_post_notifs")
+    new_follow_notifs = serializers.BooleanField(source="profile.new_follow_notifs")
+    like_notifs = serializers.BooleanField(source="profile.like_notifs")
+    comments_notifs = serializers.BooleanField(source="profile.comments_notifs")
     # groups = GroupSerializer(many=True)
     # posts = PostSerializer(many=True, read_only=True)
     follower = FollowSerializer(many=True, read_only=True)
@@ -58,6 +64,10 @@ class UserSerializer(UserDetailsSerializer):
             "follower",
             "joined_groups",
             "email",
+            "follow_post_notifs",
+            "new_follow_notifs",
+            "like_notifs",
+            "comments_notifs",
         )
         # depth = 1
         # extra_kwargs = {"password": {"write_only": True}}
@@ -80,6 +90,10 @@ class UserSerializer(UserDetailsSerializer):
         profile_picture = profile_data.get("profile_picture")
         signal_id = profile_data.get("signal_id")
         email = profile_data.get("email")
+        comments_notifs = profile_data.get("comments_notifs")
+        like_notifs = profile_data.get("like_notifs")
+        follow_post_notifs = profile_data.get("follow_post_notifs")
+        new_follow_notifs = profile_data.get("new_follow_notifs")
 
         instance = super(UserSerializer, self).update(instance, validated_data)
         # get and update user profile
@@ -104,6 +118,16 @@ class UserSerializer(UserDetailsSerializer):
             profile.birth_date = birth_date
         if profile_data and profile_picture:
             profile.profile_picture = profile_picture
+
+        if profile_data:
+            profile.new_follow_notifs = new_follow_notifs
+        if profile_data:
+            profile.follow_post_notifs = follow_post_notifs
+        if profile_data:
+            profile.like_notifs = like_notifs
+        if profile_data:
+            profile.comments_notifs = comments_notifs
+
         profile.save()
         return instance
 
