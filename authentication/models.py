@@ -23,6 +23,7 @@ class UserProfile(models.Model):
         null=True,
     )
     signal_id = models.CharField(_("id"), max_length=50, blank=True, null=True)
+    email = models.EmailField(_("email"), max_length=254)
 
     class Meta:
         verbose_name = _("userprofile")
