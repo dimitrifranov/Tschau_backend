@@ -15,7 +15,10 @@ def create_post(sender, instance, created, **kwargs):
         message = instance.creator.username + " hat einen neuen Beitrag geteilt."
         follower_ids = []
         for follower in instance.creator.follower.all():
-            if follower.user_from.profile.signal_id:
+            if (
+                follower.user_from.profile.signal_id
+                and follower.user_from.profile.follow_post_notifs
+            ):
                 follower_ids.append(follower.user_from.profile.signal_id)
             user = User.objects.get(pk=follower.user_from.pk)
             notif = Notification.objects.create(content=message, user=user,)
@@ -39,7 +42,7 @@ def create_post(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=PostLike)
 def create_post_like(sender, instance, created, **kwargs):
-    if created:
+    if created and instance.post.creator.profile.like_notifs:
         # print(instance)
         message = "hesche like becho vom " + instance.liker.username
         signal_id = instance.post.creator.profile.signal_id
@@ -62,7 +65,11 @@ def create_post_like(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=Comment)
 def create_comment(sender, instance, created, **kwargs):
-    if created and instance.creator.pk != instance.post.creator.pk:
+    if (
+        created
+        and instance.creator.pk != instance.post.creator.pk
+        and instance.post.creator.comments_notifs
+    ):
         # print(instance)
         message = instance.creator.username + " hat deinen Beitrag kommentiert."
         signal_id = instance.post.creator.profile.signal_id
