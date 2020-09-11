@@ -1,5 +1,6 @@
 from django.shortcuts import render
 import json
+import re
 
 import django_filters.rest_framework
 from rest_framework import viewsets, filters
@@ -37,6 +38,51 @@ class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
     search_fields = ["title"]
     ordering_fields = ["pub_date", "likes"]
+
+    def get_queryset(self):
+        data = self.request.query_params.get("user")
+        group_id = re.findall("\d", self.request.path_info)[0]
+        # print(group_id)
+        # print(data)
+        # data_dict = json.loads(data)
+        user = User.objects.get(pk=data)
+        group = Group.objects.get(id=group_id)
+        # print(user)
+        if group.public:
+            return group.posts.all()
+        if len(user.joined_groups.all()):
+            if user.joined_groups.filter(user=user):
+                return group.posts.all()
+        return Post.objects.none()
+
+
+class GroupsPostsViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    # queryset += Post.comment_set.all()
+    serializer_class = PostSerializer
+    filter_backends = [
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
+    search_fields = ["title"]
+    ordering_fields = ["pub_date", "likes"]
+
+    def get_queryset(self):
+        data = self.request.query_params.get("user")
+        # print(data)
+        # data_dict = json.loads(data)
+        user = User.objects.get(pk=data)
+        # print(user)
+        posts = set()
+        public_groups = Group.objects.filter(public=True)
+        for public_group in public_groups.all():
+            for post in public_group.posts.all():
+                posts.add(post.id)
+        if len(user.joined_groups.all()):
+            for joined_group in user.joined_groups.filter(group__public=True):
+                for post in joined_group.group.posts.all():
+                    posts.add(post.id)
+        return Post.objects.filter(id__in=posts)
 
 
 class FeedViewSet(NestedViewSetMixin, viewsets.ModelViewSet):

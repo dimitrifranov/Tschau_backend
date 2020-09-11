@@ -130,6 +130,7 @@ class Group(models.Model):
     pic = models.FileField(
         _("picture"), upload_to="group", max_length=100, blank=True, null=True,
     )
+    public = models.BooleanField(_("public"))
 
     class Meta:
         verbose_name = _("group")
