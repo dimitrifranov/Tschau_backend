@@ -43,17 +43,27 @@ class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         if not self.request.query_params.get("user"):
             return Post.objects.none()
         data = self.request.query_params.get("user")
-        group_id = re.findall("\d", self.request.path_info)[0]
+        group_id = re.findall("(?<=\/groups\/)\d", self.request.path_info)[0]
+        post_id = (
+            re.findall("(?<=\/posts\/)\d", self.request.path_info)[0]
+            if len(re.findall("(?<=\/posts\/)\d", self.request.path_info))
+            else 0
+        )
         # print(group_id)
+        # print(post_id)
         # print(data)
         # data_dict = json.loads(data)
         user = User.objects.get(pk=data)
         group = Group.objects.get(id=group_id)
         # print(user)
         if group.public:
+            if post_id:
+                return group.posts.filter(id=post_id)
             return group.posts.all()
         if len(user.joined_groups.all()):
             if user.joined_groups.filter(user=user):
+                if post_id:
+                    return group.posts.filter(id=post_id)
                 return group.posts.all()
         return Post.objects.none()
 
