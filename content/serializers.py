@@ -75,7 +75,7 @@ class GroupSerializer(serializers.ModelSerializer):
 
 class NotificationSerializer(serializers.ModelSerializer):
     profile_pic = serializers.FileField(
-        source="user.profile.profile_picture", read_only=True
+        source="actor.profile.profile_picture", read_only=True
     )
 
     class Meta:

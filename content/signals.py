@@ -60,7 +60,9 @@ def create_post_like(sender, instance, created, **kwargs):
         )
         user = User.objects.get(pk=instance.post.creator.pk)
         link = "/post/" + str(instance.post.id) + "/"
-        notif = Notification.objects.create(content=message, user=user, link=link)
+        notif = Notification.objects.create(
+            content=message, user=user, link=link, actor=instance.liker
+        )
         # print(r.text)
 
 
