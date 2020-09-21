@@ -148,6 +148,7 @@ class Notification(models.Model):
     content = models.CharField(_("content"), max_length=50)
     user = models.ForeignKey(User, verbose_name=_("user"), on_delete=models.CASCADE)
     time = models.DateTimeField(_("created"), auto_now=False, auto_now_add=True)
+    link = models.CharField(_("link"), max_length=50)
 
     class Meta:
         verbose_name = _("notification")

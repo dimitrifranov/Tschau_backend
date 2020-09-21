@@ -40,6 +40,8 @@ class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ordering_fields = ["pub_date", "likes"]
 
     def get_queryset(self):
+        if not self.request.query_params.get("user"):
+            return Post.objects.none()
         data = self.request.query_params.get("user")
         group_id = re.findall("\d", self.request.path_info)[0]
         # print(group_id)
@@ -68,18 +70,18 @@ class GroupsPostsViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ordering_fields = ["pub_date", "likes"]
 
     def get_queryset(self):
+        if not self.request.query_params.get("user"):
+            return Post.objects.none()
         data = self.request.query_params.get("user")
-        # print(data)
-        # data_dict = json.loads(data)
         user = User.objects.get(pk=data)
-        # print(user)
         posts = set()
         public_groups = Group.objects.filter(public=True)
         for public_group in public_groups.all():
             for post in public_group.posts.all():
                 posts.add(post.id)
         if len(user.joined_groups.all()):
-            for joined_group in user.joined_groups.filter(group__public=True):
+            for joined_group in user.joined_groups.filter(group__public=False):
+                print(joined_group)
                 for post in joined_group.group.posts.all():
                     posts.add(post.id)
         return Post.objects.filter(id__in=posts)
@@ -151,4 +153,12 @@ class NotificationViewSet(viewsets.ModelViewSet):
 class MembershipViewSet(viewsets.ModelViewSet):
     queryset = Membership.objects.all()
     serializer_class = MembershipSerializer
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == "create":
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
 
