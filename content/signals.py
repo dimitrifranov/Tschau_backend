@@ -21,7 +21,12 @@ def create_post(sender, instance, created, **kwargs):
             ):
                 follower_ids.append(follower.user_from.profile.signal_id)
             user = User.objects.get(pk=follower.user_from.pk)
-            notif = Notification.objects.create(content=message, user=user,)
+            link = (
+                "/groups/" + str(instance.group.id) + "/post/" + str(instance.id) + "/"
+            )
+            notif = Notification.objects.create(
+                content=message, user=user, link=link, actor=instance.creator
+            )
 
         if len(follower_ids):
             app_id = "56c16a44-f980-41c2-8a74-b4591cc6ab35"
@@ -30,6 +35,7 @@ def create_post(sender, instance, created, **kwargs):
                 "app_id": app_id,
                 "include_player_ids": follower_ids,
                 "contents": {"en": message},
+                "url": "https://social-tests.herokuapp.com" + link,
             }
             r = requests.post(
                 "https://onesignal.com/api/v1/notifications",
@@ -45,6 +51,13 @@ def create_post_like(sender, instance, created, **kwargs):
     if created and instance.post.creator.profile.like_notifs:
         # print(instance)
         message = "hesche like becho vom " + instance.liker.username
+        link = (
+            "/groups/"
+            + str(instance.post.group.id)
+            + "/post/"
+            + str(instance.post.id)
+            + "/"
+        )
         signal_id = instance.post.creator.profile.signal_id
         app_id = "56c16a44-f980-41c2-8a74-b4591cc6ab35"
         header = {"Content-Type": "application/json; charset=utf-8"}
@@ -52,6 +65,7 @@ def create_post_like(sender, instance, created, **kwargs):
             "app_id": app_id,
             "include_player_ids": [signal_id],
             "contents": {"en": message},
+            "url": "https://social-tests.herokuapp.com" + link,
         }
         r = requests.post(
             "https://onesignal.com/api/v1/notifications",
@@ -59,7 +73,6 @@ def create_post_like(sender, instance, created, **kwargs):
             data=json.dumps(payload),
         )
         user = User.objects.get(pk=instance.post.creator.pk)
-        link = "/post/" + str(instance.post.id) + "/"
         notif = Notification.objects.create(
             content=message, user=user, link=link, actor=instance.liker
         )
@@ -68,6 +81,7 @@ def create_post_like(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=Comment)
 def create_comment(sender, instance, created, **kwargs):
+    # print(instance.post.creator.username)
     if (
         created
         and instance.creator.pk != instance.post.creator.pk
@@ -75,6 +89,13 @@ def create_comment(sender, instance, created, **kwargs):
     ):
         # print(instance)
         message = instance.creator.username + " hat deinen Beitrag kommentiert."
+        link = (
+            "/groups/"
+            + str(instance.post.group.id)
+            + "/post/"
+            + str(instance.post.id)
+            + "/"
+        )
         signal_id = instance.post.creator.profile.signal_id
         app_id = "56c16a44-f980-41c2-8a74-b4591cc6ab35"
         header = {"Content-Type": "application/json; charset=utf-8"}
@@ -82,6 +103,7 @@ def create_comment(sender, instance, created, **kwargs):
             "app_id": app_id,
             "include_player_ids": [signal_id],
             "contents": {"en": message},
+            "url": "https://social-tests.herokuapp.com" + link,
         }
         r = requests.post(
             "https://onesignal.com/api/v1/notifications",
@@ -89,6 +111,8 @@ def create_comment(sender, instance, created, **kwargs):
             data=json.dumps(payload),
         )
         user = User.objects.get(pk=instance.post.creator.pk)
-        notif = Notification.objects.create(content=message, user=user,)
+        notif = Notification.objects.create(
+            content=message, user=user, link=link, actor=instance.creator
+        )
         # print(r.text)
 

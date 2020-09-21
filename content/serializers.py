@@ -42,6 +42,9 @@ class CommentSerializer(serializers.ModelSerializer):
 
     likes = CommentLikeSerializer(many=True, read_only=True)
     creator_name = serializers.CharField(source="creator.username", read_only=True)
+    profile_pic = serializers.FileField(
+        source="creator.profile.profile_picture", read_only=True
+    )
 
     class Meta:
         model = Comment
