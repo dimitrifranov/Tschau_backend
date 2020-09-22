@@ -188,11 +188,11 @@ class MembershipViewSet(viewsets.ModelViewSet):
     queryset = Membership.objects.all()
     serializer_class = MembershipSerializer
 
-    def get_permissions(self):
-        """
-        Instantiates and returns the list of permissions that this view requires.
-        """
-        if self.action == "create":
-            permission_classes = [IsAuthenticated]
-        return [permission() for permission in permission_classes]
+    # def get_permissions(self):
+    #     """
+    #     Instantiates and returns the list of permissions that this view requires.
+    #     """
+    #     if self.action == "create":
+    #         permission_classes = [IsAuthenticated]
+    #     return [permission() for permission in permission_classes]
 

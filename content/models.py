@@ -183,6 +183,7 @@ class Membership(models.Model):
     group = models.ForeignKey(
         "content.Group", related_name=_("group_members"), on_delete=models.CASCADE
     )
+    secret = models.IntegerField(_("secret"), blank=True, null=True,)
 
     class Meta:
         verbose_name = _("membership")
@@ -193,3 +194,9 @@ class Membership(models.Model):
 
     def get_absolute_url(self):
         return reverse("membership_detail", kwargs={"pk": self.pk})
+
+    def save(self, *args, **kwargs):
+        if self.secret == self.group.secret or self.group.public:
+            super().save(*args, **kwargs)
+        else:
+            return
