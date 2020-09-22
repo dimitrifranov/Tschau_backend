@@ -1,4 +1,5 @@
 from django.db import models
+import random
 
 from django.utils.translation import gettext as _
 from django.urls import reverse
@@ -131,6 +132,11 @@ class Group(models.Model):
         _("picture"), upload_to="group", max_length=100, blank=True, null=True,
     )
     public = models.BooleanField(_("public"))
+    secret = models.IntegerField(
+        _("secret"),
+        default=random.randint(100000000000, 100000000000000),
+        editable=False,
+    )
 
     class Meta:
         verbose_name = _("group")
