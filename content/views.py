@@ -62,7 +62,7 @@ class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
         user = User.objects.get(pk=data)
         # print(user)
-        if group.public:
+        if group.public or group.creator == self.request.query_params.get("user"):
             if post_id:
                 return group.posts.filter(id=post_id)
             return group.posts.all()
@@ -132,18 +132,7 @@ class FeedViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     search_fields = ["title"]
     ordering_fields = ["pub_date", "likes"]
 
-    def get_queryset(self):
-        data = self.request.query_params.get("user")
-        # print(data)
-        # data_dict = json.loads(data)
-        user = User.objects.get(pk=data)
-        # print(user)
-        posts = set()
-        for following in user.following.all():
-            for post in following.user_to.posts.all():
-                posts.add(post.id)
-                # print(posts)
-        return Post.objects.filter(id__in=posts)
+    c
 
 
 class CommentViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
@@ -161,6 +150,15 @@ class GroupViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         filters.OrderingFilter,
     ]
     search_fields = ["name"]
+
+    # def get_queryset(self):
+    #     user = self.request.query_params.get("user")
+
+    #     for following in user.following.all():
+    #         for post in following.user_to.posts.all():
+    #             posts.add(post.id)
+    #             # print(posts)
+    #     return Post.objects.filter(id__in=posts)
 
 
 class CommentLikeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
