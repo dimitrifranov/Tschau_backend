@@ -24,10 +24,14 @@ class UserProfile(models.Model):
     )
     signal_id = models.CharField(_("id"), max_length=50, blank=True, null=True)
     email = models.EmailField(_("email"), max_length=254)
-    new_follow_notifs = models.BooleanField(_("new follower notifications"))
-    follow_post_notifs = models.BooleanField(_("follower post notifications"))
-    like_notifs = models.BooleanField(_("like notifications"))
-    comments_notifs = models.BooleanField(_("comments notifications"))
+    new_follow_notifs = models.BooleanField(
+        _("new follower notifications"), default=True
+    )
+    follow_post_notifs = models.BooleanField(
+        _("follower post notifications"), default=True
+    )
+    like_notifs = models.BooleanField(_("like notifications"), default=True)
+    comments_notifs = models.BooleanField(_("comments notifications"), default=True)
 
     class Meta:
         verbose_name = _("userprofile")
