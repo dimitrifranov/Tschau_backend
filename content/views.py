@@ -132,8 +132,6 @@ class FeedViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     search_fields = ["title"]
     ordering_fields = ["pub_date", "likes"]
 
-    c
-
 
 class CommentViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = Comment.objects.all()
