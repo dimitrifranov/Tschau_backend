@@ -39,21 +39,28 @@ class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ordering_fields = ["pub_date", "likes"]
 
     def get_queryset(self):
-        if not self.request.query_params.get("user"):
-            return Post.objects.none()
-        data = self.request.query_params.get("user")
         group_id = re.findall("(?<=\/groups\/)\d", self.request.path_info)[0]
         post_id = (
             re.findall("(?<=\/posts\/)\d", self.request.path_info)[0]
             if len(re.findall("(?<=\/posts\/)\d", self.request.path_info))
             else 0
         )
+        group = Group.objects.get(id=group_id)
+        if not self.request.query_params.get("user"):
+            if group.public:
+                if post_id:
+                    return group.posts.filter(id=post_id)
+                return group.posts.all()
+            else:
+                return Post.objects.none()
+        data = self.request.query_params.get("user")
+
         # print(group_id)
         # print(post_id)
         # print(data)
         # data_dict = json.loads(data)
+
         user = User.objects.get(pk=data)
-        group = Group.objects.get(id=group_id)
         # print(user)
         if group.public:
             if post_id:
