@@ -38,9 +38,6 @@ class UserSerializer(UserDetailsSerializer):
     signal_id = serializers.CharField(
         source="profile.signal_id", required=False, allow_null=True
     )
-    email = serializers.EmailField(
-        source="profile.email", required=False, allow_null=True
-    )
     follow_post_notifs = serializers.BooleanField(source="profile.follow_post_notifs")
     new_follow_notifs = serializers.BooleanField(source="profile.new_follow_notifs")
     like_notifs = serializers.BooleanField(source="profile.like_notifs")
@@ -60,7 +57,6 @@ class UserSerializer(UserDetailsSerializer):
             "following",
             "follower",
             "joined_groups",
-            "email",
             "follow_post_notifs",
             "new_follow_notifs",
             "like_notifs",
@@ -70,8 +66,6 @@ class UserSerializer(UserDetailsSerializer):
     def create(self, validated_data):
         profile_data = validated_data.pop("profile", None)
         validated_data["password"] = make_password(validated_data["password"])
-        print("data: ")
-        print(validated_data)
         user = super(UserSerializer, self).create(validated_data)
 
         return user
@@ -82,7 +76,6 @@ class UserSerializer(UserDetailsSerializer):
         birth_date = profile_data.get("birth_date")
         profile_picture = profile_data.get("profile_picture")
         signal_id = profile_data.get("signal_id")
-        email = profile_data.get("email")
         comments_notifs = profile_data.get("comments_notifs")
         like_notifs = profile_data.get("like_notifs")
         follow_post_notifs = profile_data.get("follow_post_notifs")
@@ -103,9 +96,6 @@ class UserSerializer(UserDetailsSerializer):
 
         if profile_data and signal_id:
             profile.signal_id = signal_id
-
-        if profile_data and email:
-            profile.email = email
 
         if profile_data and birth_date:
             profile.birth_date = birth_date
