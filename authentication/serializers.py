@@ -1,7 +1,8 @@
 from django.contrib.auth.models import User
 
 from rest_framework import serializers
-from dj_rest_auth.serializers import UserDetailsSerializer
+
+# from dj_rest_auth.serializers import UserDetailsSerializer
 from content.serializers import MembershipSerializer
 
 from django.contrib.auth.hashers import make_password
@@ -25,6 +26,16 @@ class FollowSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = Group
 #         fields = ("name", "members")
+
+
+class UserDetailsSerializer(serializers.ModelSerializer):
+    """
+    User model w/o password
+    """
+
+    class Meta:
+        model = User
+        fields = ("pk", "username", "email", "first_name", "last_name")
 
 
 class UserSerializer(UserDetailsSerializer):
