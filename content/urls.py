@@ -9,6 +9,7 @@ router.register(r"notifications", views.NotificationViewSet, basename="notificat
 router.register(r"memberships", views.MembershipViewSet, basename="membership")
 router.register(r"feed", views.FeedViewSet, basename="feed")
 router.register(r"all_posts", views.GroupsPostsViewSet, basename="all_posts")
+router.register(r"public_posts", views.PublicPostsViewSet, basename="public_posts")
 groups_routes = router.register(r"groups", views.GroupViewSet, basename="group")
 posts_routes = groups_routes.register(
     r"posts", views.PostViewSet, basename="post", parents_query_lookups=["group"]

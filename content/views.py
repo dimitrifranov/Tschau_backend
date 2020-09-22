@@ -29,7 +29,6 @@ from content.serializers import (
 
 class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = Post.objects.all()
-    # queryset += Post.comment_set.all()
     serializer_class = PostSerializer
     filter_backends = [
         filters.SearchFilter,
@@ -68,9 +67,27 @@ class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         return Post.objects.none()
 
 
+class PublicPostsViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    filter_backends = [
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
+    search_fields = ["title"]
+    ordering_fields = ["pub_date", "likes"]
+
+    def get_queryset(self):
+        posts = set()
+        public_groups = Group.objects.filter(public=True)
+        for public_group in public_groups.all():
+            for post in public_group.posts.all():
+                posts.add(post.id)
+        return Post.objects.filter(id__in=posts)
+
+
 class GroupsPostsViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = Post.objects.all()
-    # queryset += Post.comment_set.all()
     serializer_class = PostSerializer
     filter_backends = [
         filters.SearchFilter,
