@@ -44,21 +44,6 @@ class UserProfile(models.Model):
         return reverse("userprofile_detail", kwargs={"pk": self.pk})
 
 
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.create(user=instance)
-
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    # user = instance
-    # if created:
-    #     profile = UserProfile(user=user)
-    #     profile.save()
-    instance.profile.save()
-
-
 class Follow(models.Model):
 
     user_from = models.ForeignKey(

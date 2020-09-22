@@ -133,9 +133,7 @@ class Group(models.Model):
     )
     public = models.BooleanField(_("public"))
     secret = models.IntegerField(
-        _("secret"),
-        default=random.randint(100000000000, 100000000000000),
-        editable=False,
+        _("secret"), default=random.randint(21474836, 2147483647), editable=False,
     )
 
     class Meta:

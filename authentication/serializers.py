@@ -45,8 +45,6 @@ class UserSerializer(UserDetailsSerializer):
     new_follow_notifs = serializers.BooleanField(source="profile.new_follow_notifs")
     like_notifs = serializers.BooleanField(source="profile.like_notifs")
     comments_notifs = serializers.BooleanField(source="profile.comments_notifs")
-    # groups = GroupSerializer(many=True)
-    # posts = PostSerializer(many=True, read_only=True)
     follower = FollowSerializer(many=True, read_only=True)
     following = FollowSerializer(many=True, read_only=True)
     joined_groups = MembershipSerializer(many=True, read_only=True)
@@ -58,7 +56,6 @@ class UserSerializer(UserDetailsSerializer):
             "bio",
             "birth_date",
             "profile_picture",
-            # "posts",
             "signal_id",
             "following",
             "follower",
@@ -69,19 +66,15 @@ class UserSerializer(UserDetailsSerializer):
             "like_notifs",
             "comments_notifs",
         )
-        # depth = 1
-        # extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
         profile_data = validated_data.pop("profile", None)
         validated_data["password"] = make_password(validated_data["password"])
+        print("data: ")
+        print(validated_data)
         user = super(UserSerializer, self).create(validated_data)
 
         return user
-
-    # def update(self, instance, validated_data):
-    #     profile_data = validated_data.pop("profile", None)
-    #     return super(UserSerializer, self).update(instance, validated_data)
 
     def update(self, instance, validated_data):
         profile_data = validated_data.pop("profile", {})
