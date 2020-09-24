@@ -39,10 +39,10 @@ class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ordering_fields = ["pub_date", "likes"]
 
     def get_queryset(self):
-        group_id = re.findall("(?<=\/groups\/)\d", self.request.path_info)[0]
+        group_id = re.findall("(?<=\/groups\/)\d+", self.request.path_info)[0]
         post_id = (
-            re.findall("(?<=\/posts\/)\d", self.request.path_info)[0]
-            if len(re.findall("(?<=\/posts\/)\d", self.request.path_info))
+            re.findall("(?<=\/posts\/)\d+", self.request.path_info)[0]
+            if len(re.findall("(?<=\/posts\/)\d+", self.request.path_info))
             else 0
         )
         group = Group.objects.get(id=group_id)
@@ -149,14 +149,42 @@ class GroupViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
     search_fields = ["name"]
 
-    # def get_queryset(self):
-    #     user = self.request.query_params.get("user")
+    def get_queryset(self):
+        group_id = (
+            re.findall("(?<=\/groups\/)\d+", self.request.path_info)[0]
+            if len(re.findall("(?<=\/groups\/)\d+", self.request.path_info))
+            else 0
+        )
+        user_id = self.request.query_params.get("user")
+        if group_id:
+            group = Group.objects.get(id=group_id)
+            if group.public:
+                return Group.objects.filter(id=group_id)
+            elif user_id:
+                user = User.objects.get(pk=user_id)
+                for group_member in group.group_members.all():
+                    if group_member.user.id == int(user_id):
+                        return Group.objects.filter(id=group_id)
+                for created_group in user.created_groups.all():
+                    if created_group.id == int(group_id):
+                        return Group.objects.filter(id=group_id)
+                return Group.objects.none()
+            else:
+                return Group.objects.none()
+        else:
+            groups = set()
+            public_groups = Group.objects.filter(public=True)
+            for public_group in public_groups.all():
+                groups.add(public_group.id)
+            if user_id:
+                user = User.objects.get(pk=user_id)
+                for joined_group in user.joined_groups.all():
+                    groups.add(joined_group.group.id)
+                for created_group in user.created_groups.all():
+                    groups.add(created_group.id)
+            return Group.objects.filter(id__in=groups)
 
-    #     for following in user.following.all():
-    #         for post in following.user_to.posts.all():
-    #             posts.add(post.id)
-    #             # print(posts)
-    #     return Post.objects.filter(id__in=posts)
+            return Post.objects.filter(id__in=posts)
 
 
 class CommentLikeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
