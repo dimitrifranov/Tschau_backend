@@ -200,6 +200,9 @@ class PostLikeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 class NotificationViewSet(viewsets.ModelViewSet):
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
+    filter_backends = [
+        filters.OrderingFilter,
+    ]
     ordering_fields = ["time"]
 
     def get_queryset(self):
