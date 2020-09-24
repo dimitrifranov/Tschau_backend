@@ -24,9 +24,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "social-tests.herokuapp.com",
+    "social-tests-api.herokuapp.com",
+    ".localhost",
+    "127.0.0.1",
+    "[::1]",
+]
 
 
 # Application definition
@@ -174,3 +180,8 @@ DATABASE_URL = os.environ["DATABASE_URL"]
 conn = psycopg2.connect(DATABASE_URL, sslmode="require")
 DATABASES["default"] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 # DATABASES = {"default": dj_database_url.config(default=config("DATABASE_URL"))}
+
+
+# https
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
