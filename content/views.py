@@ -115,7 +115,6 @@ class GroupsPostsViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
                 posts.add(post.id)
         if len(user.joined_groups.all()):
             for joined_group in user.joined_groups.filter(group__public=False):
-                print(joined_group)
                 for post in joined_group.group.posts.all():
                     posts.add(post.id)
         return Post.objects.filter(id__in=posts)
@@ -131,6 +130,24 @@ class FeedViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
     search_fields = ["title"]
     ordering_fields = ["pub_date", "likes"]
+
+    def get_queryset(self):
+        if not self.request.query_params.get("user"):
+            return Post.objects.none()
+        user_id = self.request.query_params.get("user")
+        user = User.objects.get(pk=user_id)
+        posts = set()
+        if len(user.joined_groups.all()):
+            for joined_group in user.joined_groups.filter(group__public=False):
+                for post in joined_group.group.posts.all():
+                    posts.add(post.id)
+        # print(user.following.all())
+        if len(user.following.all()):
+            for following_user in user.following.all():
+                for post in following_user.user_to.posts.all():
+                    posts.add(post.id)
+
+        return Post.objects.filter(id__in=posts)
 
 
 class CommentViewSet(NestedViewSetMixin, viewsets.ModelViewSet):

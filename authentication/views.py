@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User, Group
 from authentication.models import Follow
 from content.models import Post
+from django.db.models import Q
+
 
 from authentication.serializers import (
     UserSerializer,
@@ -22,7 +24,7 @@ class UserList(generics.ListCreateAPIView):
     search_fields = ["username"]
 
 
-class UserDetails(generics.RetrieveUpdateAPIView):
+class UserDetails(generics.RetrieveUpdateDestroyAPIView):
     # permission_classes = [permissions.IsAuthenticated, TokenHasReadWriteScope]
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -51,4 +53,11 @@ class UserPostList(generics.ListAPIView):
 
     def get_queryset(self):
         pk = self.kwargs["pk"]
-        return Post.objects.filter(creator__pk=pk)
+        user_id = self.request.query_params.get("user")
+        posts = set()
+        if not user_id:
+            is_by_user = Q(creator__pk=pk)
+            is_public = Q(group__public=True)
+            return Post.objects.filter(is_by_user & is_public)
+        # else:
+        #     user = User.objects.get(pk=user_id)
