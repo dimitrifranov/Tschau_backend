@@ -28,10 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     "social-tests.herokuapp.com",
-    "tschau.app",
-    ".localhost",
-    "127.0.0.1",
-    "[::1]",
+    "www.tschau.app",
 ]
 
 
