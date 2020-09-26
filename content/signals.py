@@ -85,7 +85,7 @@ def create_comment(sender, instance, created, **kwargs):
     if (
         created
         and instance.creator.pk != instance.post.creator.pk
-        and instance.post.creator.comments_notifs
+        and instance.post.creator.profile.comments_notifs
     ):
         # print(instance)
         message = instance.creator.username + " hat deinen Beitrag kommentiert."
