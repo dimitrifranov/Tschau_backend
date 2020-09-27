@@ -86,7 +86,7 @@ class UserSerializer(UserDetailsSerializer):
 
     def update(self, instance, validated_data):
         profile_data = validated_data.pop("profile", {})
-        if validated_data["password"]:
+        if len(validated_data["password"]) < 70:
             validated_data["password"] = make_password(validated_data["password"])
         bio = profile_data.get("bio")
         birth_date = profile_data.get("birth_date")
