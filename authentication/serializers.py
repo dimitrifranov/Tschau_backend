@@ -73,6 +73,9 @@ class UserSerializer(UserDetailsSerializer):
             "like_notifs",
             "comments_notifs",
         )
+        extra_kwargs = {
+            "password": {"required": False},
+        }
 
     def create(self, validated_data):
         profile_data = validated_data.pop("profile", None)
