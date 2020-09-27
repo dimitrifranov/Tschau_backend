@@ -86,7 +86,8 @@ class UserSerializer(UserDetailsSerializer):
 
     def update(self, instance, validated_data):
         profile_data = validated_data.pop("profile", {})
-        validated_data["password"] = make_password(validated_data["password"])
+        if validated_data["password"]:
+            validated_data["password"] = make_password(validated_data["password"])
         bio = profile_data.get("bio")
         birth_date = profile_data.get("birth_date")
         profile_picture = profile_data.get("profile_picture")
