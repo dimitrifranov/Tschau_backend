@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 class Post(models.Model):
 
     pub_date = models.DateTimeField(_("created"), auto_now=False, auto_now_add=True)
-    title = models.CharField(_("Title"), max_length=50)
+    title = models.CharField(_("Title"), max_length=200)
     creator = models.ForeignKey(
         User, verbose_name=_("creator"), related_name="posts", on_delete=models.CASCADE,
     )
@@ -127,7 +127,7 @@ class Group(models.Model):
     )
     create_date = models.DateTimeField(_("created"), auto_now=False, auto_now_add=True)
     name = models.CharField(_("name"), max_length=50, unique=True)
-    description = models.CharField(_("description"), max_length=100)
+    description = models.CharField(_("description"), max_length=200)
     pic = models.FileField(
         _("picture"), upload_to="group", max_length=100, blank=True, null=True,
     )
@@ -149,7 +149,7 @@ class Group(models.Model):
 
 class Notification(models.Model):
 
-    content = models.CharField(_("content"), max_length=50)
+    content = models.CharField(_("content"), max_length=300)
     user = models.ForeignKey(
         User, related_name="my_notifs", verbose_name=_("user"), on_delete=models.CASCADE
     )
