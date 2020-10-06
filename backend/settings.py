@@ -192,3 +192,12 @@ DATABASES["default"] = dj_database_url.config(conn_max_age=600, ssl_require=True
 # https
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
+
+
+CORS_ORIGIN_ALLOW_ALL = False
+
+CORS_ORIGIN_WHITELIST = (
+    "https://social-tests.herokuapp.com",
+    "https://.tschau.app",
+    "http://localhost:3000",
+)
