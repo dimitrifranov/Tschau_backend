@@ -201,3 +201,5 @@ CORS_ORIGIN_WHITELIST = (
     "https://.tschau.app",
     "http://localhost:3000",
 )
+
+CORS_ALLOW_CREDENTIALS = True
