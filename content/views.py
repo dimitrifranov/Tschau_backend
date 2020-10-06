@@ -228,10 +228,10 @@ class NotificationViewSet(viewsets.ModelViewSet):
     ordering_fields = ["time"]
 
     def get_queryset(self):
-        data = self.request.query_params.get("data")
-        data_dict = json.loads(data)
+        user = self.request.query_params.get("user")
+        # data_dict = json.loads(data)
         # print(data_dict["user"])
-        return Notification.objects.filter(user=data_dict["user"])
+        return Notification.objects.filter(user=user)
 
 
 class MembershipViewSet(viewsets.ModelViewSet):
