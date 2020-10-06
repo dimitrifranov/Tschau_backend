@@ -30,6 +30,9 @@ ALLOWED_HOSTS = [
     "social-tests.herokuapp.com",
     "www.tschau.app",
     "http://localhost:3000/",
+    ".localhost",
+    "127.0.0.1",
+    "[::1]",
 ]
 
 
