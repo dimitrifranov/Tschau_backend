@@ -6,6 +6,9 @@ import django_filters.rest_framework
 from rest_framework import viewsets, filters
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+
+
 from content.models import (
     Post,
     Comment,
@@ -30,6 +33,7 @@ from content.serializers import (
 class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [
         filters.SearchFilter,
         filters.OrderingFilter,
@@ -55,13 +59,7 @@ class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
                 return Post.objects.none()
         data = self.request.query_params.get("user")
 
-        # print(group_id)
-        # print(post_id)
-        # print(data)
-        # data_dict = json.loads(data)
-
         user = User.objects.get(pk=data)
-        # print(user)
         if group.public or group.creator == self.request.query_params.get("user"):
             if post_id:
                 return group.posts.filter(id=post_id)
@@ -76,6 +74,7 @@ class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
 class PublicPostsViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = Post.objects.all()
+    permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
     filter_backends = [
         filters.SearchFilter,
@@ -96,6 +95,7 @@ class PublicPostsViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 class GroupsPostsViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [
         filters.SearchFilter,
         filters.OrderingFilter,
@@ -122,7 +122,7 @@ class GroupsPostsViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
 class FeedViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = Post.objects.all()
-    # queryset += Post.comment_set.all()
+    permission_classes = [IsAuthenticated]
     serializer_class = PostSerializer
     filter_backends = [
         filters.SearchFilter,
@@ -151,6 +151,7 @@ class FeedViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
 
 class CommentViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     filter_backends = [filters.SearchFilter]
@@ -158,6 +159,7 @@ class CommentViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
 
 class GroupViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     filter_backends = [
@@ -205,16 +207,19 @@ class GroupViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
 
 class CommentLikeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = CommentLike.objects.all()
     serializer_class = CommentLikeSerializer
 
 
 class PostLikeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = PostLike.objects.all()
     serializer_class = PostLikeSerializer
 
 
 class NotificationViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
     filter_backends = [
@@ -230,14 +235,6 @@ class NotificationViewSet(viewsets.ModelViewSet):
 
 
 class MembershipViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
     queryset = Membership.objects.all()
     serializer_class = MembershipSerializer
-
-    # def get_permissions(self):
-    #     """
-    #     Instantiates and returns the list of permissions that this view requires.
-    #     """
-    #     if self.action == "create":
-    #         permission_classes = [IsAuthenticated]
-    #     return [permission() for permission in permission_classes]
-

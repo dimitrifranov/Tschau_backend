@@ -194,6 +194,9 @@ class Membership(models.Model):
         return reverse("membership_detail", kwargs={"pk": self.pk})
 
     def save(self, *args, **kwargs):
+        for membership in self.user.joined_groups.all():
+            if membership.group.pk == self.group.pk:
+                return
         if self.secret == self.group.secret or self.group.public:
             super().save(*args, **kwargs)
         else:

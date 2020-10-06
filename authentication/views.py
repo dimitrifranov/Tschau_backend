@@ -10,14 +10,16 @@ from authentication.serializers import (
 )
 from content.serializers import PostSerializer
 
-from rest_framework import generics, permissions, filters
+from rest_framework import generics, filters
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+
 
 # from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope, TokenHasScope
 
 
 # Create your views here.
 class UserList(generics.ListCreateAPIView):
-    # permission_classes = [permissions.IsAuthenticated, TokenHasReadWriteScope]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = User.objects.all()
     serializer_class = UserSerializer
     filter_backends = [filters.SearchFilter]
@@ -25,29 +27,25 @@ class UserList(generics.ListCreateAPIView):
 
 
 class UserDetails(generics.RetrieveUpdateDestroyAPIView):
-    # permission_classes = [permissions.IsAuthenticated, TokenHasReadWriteScope]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
-# class GroupList(generics.ListAPIView):
-#     # permission_classes = [permissions.IsAuthenticated, TokenHasScope]
-#     required_scopes = ["groups"]
-#     queryset = Group.objects.all()
-#     serializer_class = GroupSerializer
-
-
 class FollowViewSet(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
 
 
 class FollowDetails(generics.RetrieveDestroyAPIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
 
 
 class UserPostList(generics.ListAPIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
     queryset = Post.objects.all()
 
