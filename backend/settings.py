@@ -198,7 +198,13 @@ CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ORIGIN_WHITELIST = (
     "https://social-tests.herokuapp.com",
-    "https://.tschau.app",
+    "https://tschau.app",
+    "http://localhost:3000",
+)
+
+CSRF_TRUSTED_ORIGINS = (
+    "https://social-tests.herokuapp.com",
+    "https://tschau.app",
     "http://localhost:3000",
 )
 
