@@ -50,7 +50,7 @@ def create_post(sender, instance, created, **kwargs):
 def create_post_like(sender, instance, created, **kwargs):
     if created and instance.post.creator.profile.like_notifs:
         # print(instance)
-        message = "hesche like becho vom " + instance.liker.username
+        message = instance.liker.username + " gefällt einen deiner Beiträge."
         link = (
             "/groups/"
             + str(instance.post.group.id)
@@ -115,4 +115,3 @@ def create_comment(sender, instance, created, **kwargs):
             content=message, user=user, link=link, actor=instance.creator
         )
         # print(r.text)
-

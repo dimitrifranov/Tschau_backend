@@ -12,7 +12,10 @@ class Post(models.Model):
     pub_date = models.DateTimeField(_("created"), auto_now=False, auto_now_add=True)
     title = models.CharField(_("Title"), max_length=200)
     creator = models.ForeignKey(
-        User, verbose_name=_("creator"), related_name="posts", on_delete=models.CASCADE,
+        User,
+        verbose_name=_("creator"),
+        related_name="posts",
+        on_delete=models.CASCADE,
     )
     # likes = models.CharField(_("likes"), max_length=50)
     src = models.FileField(_("file"), upload_to="static", max_length=100)
@@ -129,11 +132,17 @@ class Group(models.Model):
     name = models.CharField(_("name"), max_length=50, unique=True)
     description = models.CharField(_("description"), max_length=200)
     pic = models.FileField(
-        _("picture"), upload_to="group", max_length=100, blank=True, null=True,
+        _("picture"),
+        upload_to="group",
+        max_length=100,
+        blank=True,
+        null=True,
     )
     public = models.BooleanField(_("public"))
-    secret = models.IntegerField(
-        _("secret"), default=random.randint(21474836, 2147483647), editable=False,
+    secret = models.BigIntegerField(
+        _("secret"),
+        default=random.randint(1223372036854775807, 9223372036854775807),
+        editable=False,
     )
 
     class Meta:
@@ -181,7 +190,11 @@ class Membership(models.Model):
     group = models.ForeignKey(
         "content.Group", related_name=_("group_members"), on_delete=models.CASCADE
     )
-    secret = models.IntegerField(_("secret"), blank=True, null=True,)
+    secret = models.IntegerField(
+        _("secret"),
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         verbose_name = _("membership")
