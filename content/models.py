@@ -190,7 +190,7 @@ class Membership(models.Model):
     group = models.ForeignKey(
         "content.Group", related_name=_("group_members"), on_delete=models.CASCADE
     )
-    secret = models.IntegerField(
+    secret = models.BigIntegerField(
         _("secret"),
         blank=True,
         null=True,
