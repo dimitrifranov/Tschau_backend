@@ -1,5 +1,5 @@
 from django.db import models
-import random
+import os
 
 from django.utils.translation import gettext as _
 from django.urls import reverse
@@ -139,9 +139,10 @@ class Group(models.Model):
         null=True,
     )
     public = models.BooleanField(_("public"))
-    secret = models.BigIntegerField(
+    secret = models.CharField(
         _("secret"),
-        default=random.randint(1223372036854775807, 9223372036854775807),
+        default=os.urandom(16),
+        max_length=200,
         editable=False,
     )
 
@@ -190,8 +191,9 @@ class Membership(models.Model):
     group = models.ForeignKey(
         "content.Group", related_name=_("group_members"), on_delete=models.CASCADE
     )
-    secret = models.BigIntegerField(
+    secret = models.CharField(
         _("secret"),
+        max_length=200,
         blank=True,
         null=True,
     )
@@ -207,6 +209,8 @@ class Membership(models.Model):
         return reverse("membership_detail", kwargs={"pk": self.pk})
 
     def save(self, *args, **kwargs):
+        print(self.secret)
+        print(self.group.secret)
         for membership in self.user.joined_groups.all():
             if membership.group.pk == self.group.pk:
                 return
