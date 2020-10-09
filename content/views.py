@@ -43,13 +43,13 @@ class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ordering_fields = ["pub_date", "likes"]
 
     def get_queryset(self):
-        group_id = re.findall("(?<=\/groups\/)\d+", self.request.path_info)[0]
-        post_id = (
-            re.findall("(?<=\/posts\/)\d+", self.request.path_info)[0]
-            if len(re.findall("(?<=\/posts\/)\d+", self.request.path_info))
-            else 0
-        )
+        group_id = int(self.kwargs["parent_lookup_group"])
+        if "pk" in self.kwargs:
+            post_id = int(self.kwargs["pk"])
+        else:
+            post_id = None
         group = Group.objects.get(id=group_id)
+        print(group_id)
         if not self.request.query_params.get("user"):
             if group.public:
                 if post_id:
@@ -57,15 +57,18 @@ class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
                 return group.posts.all()
             else:
                 return Post.objects.none()
-        data = self.request.query_params.get("user")
+        data = int(self.request.query_params.get("user"))
 
         user = User.objects.get(pk=data)
-        if group.public or group.creator == self.request.query_params.get("user"):
+        print(data)
+        print(group.creator.pk)
+        if group.public or group.creator.pk == data:
             if post_id:
+                print(post_id)
                 return group.posts.filter(id=post_id)
             return group.posts.all()
-        if len(user.joined_groups.all()):
-            if user.joined_groups.filter(user=user):
+        if len(group.group_members.all()):
+            if group.group_members.filter(user=user):
                 if post_id:
                     return group.posts.filter(id=post_id)
                 return group.posts.all()
