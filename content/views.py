@@ -140,6 +140,9 @@ class FeedViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         user_id = self.request.query_params.get("user")
         user = User.objects.get(pk=user_id)
         posts = set()
+        if len(user.posts.all()):
+            for post in user.posts.all():
+                posts.add(post.id)
         if len(user.joined_groups.all()):
             for joined_group in user.joined_groups.filter(group__public=False):
                 for post in joined_group.group.posts.all():
