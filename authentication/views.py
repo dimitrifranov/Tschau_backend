@@ -18,7 +18,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 
 # Create your views here.
 class UserList(generics.ListCreateAPIView):
-    # permission_classes = [IsAuthenticatedOrReadOnly]
+    #     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = User.objects.all()
     serializer_class = UserSerializer
     filter_backends = [filters.SearchFilter]
