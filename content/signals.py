@@ -35,7 +35,7 @@ def create_post(sender, instance, created, **kwargs):
                 "app_id": app_id,
                 "include_player_ids": follower_ids,
                 "contents": {"en": message},
-                "url": "https://social-tests.herokuapp.com" + link,
+                "url": "https://tschau.app" + link,
             }
             r = requests.post(
                 "https://onesignal.com/api/v1/notifications",
@@ -65,7 +65,7 @@ def create_post_like(sender, instance, created, **kwargs):
             "app_id": app_id,
             "include_player_ids": [signal_id],
             "contents": {"en": message},
-            "url": "https://social-tests.herokuapp.com" + link,
+            "url": "https://tschau.app" + link,
         }
         r = requests.post(
             "https://onesignal.com/api/v1/notifications",
@@ -103,7 +103,7 @@ def create_comment(sender, instance, created, **kwargs):
             "app_id": app_id,
             "include_player_ids": [signal_id],
             "contents": {"en": message},
-            "url": "https://social-tests.herokuapp.com" + link,
+            "url": "https://tschau.app" + link,
         }
         r = requests.post(
             "https://onesignal.com/api/v1/notifications",
