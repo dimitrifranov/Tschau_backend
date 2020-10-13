@@ -120,6 +120,11 @@ class PostLike(models.Model):
         return reverse("postlike_detail", kwargs={"pk": self.pk})
 
 
+def groupdefault():
+    base = str(os.urandom(16))
+    return base.replace("\\", "")
+
+
 class Group(models.Model):
 
     creator = models.ForeignKey(
@@ -141,7 +146,7 @@ class Group(models.Model):
     public = models.BooleanField(_("public"))
     secret = models.CharField(
         _("secret"),
-        default=os.urandom(16),
+        default=groupdefault,
         max_length=200,
         editable=False,
     )
