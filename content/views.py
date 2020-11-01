@@ -49,7 +49,7 @@ class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         else:
             post_id = None
         group = Group.objects.get(id=group_id)
-        print(group_id)
+        # print(group_id)
         if not self.request.query_params.get("user"):
             if group.public:
                 if post_id:
@@ -60,11 +60,11 @@ class PostViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         data = int(self.request.query_params.get("user"))
 
         user = User.objects.get(pk=data)
-        print(data)
-        print(group.creator.pk)
+        # print(data)
+        # print(group.creator.pk)
         if group.public or group.creator.pk == data:
             if post_id:
-                print(post_id)
+                # print(post_id)
                 return group.posts.filter(id=post_id)
             return group.posts.all()
         if len(group.group_members.all()):
@@ -151,7 +151,8 @@ class FeedViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         if len(user.following.all()):
             for following_user in user.following.all():
                 for post in following_user.user_to.posts.all():
-                    posts.add(post.id)
+                    if post.group.public:
+                        posts.add(post.id)
 
         return Post.objects.filter(id__in=posts)
 
