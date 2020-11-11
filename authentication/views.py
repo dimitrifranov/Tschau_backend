@@ -54,8 +54,10 @@ class UserPostList(generics.ListAPIView):
     ]
 
     def get_queryset(self):
+        user_id = None
         pk = int(self.kwargs["pk"])
-        user_id = int(self.request.query_params.get("user"))
+        if self.request.query_params.get("user"):
+            user_id = int(self.request.query_params.get("user"))
         posts = set()
         if not user_id:
             is_by_user = Q(creator__pk=pk)
