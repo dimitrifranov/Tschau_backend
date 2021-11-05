@@ -1,16 +1,16 @@
 {
-    "sqltools.connections": [
-        {
-            "askForPassword": false,
-            "database": "school_net",
-            "driver": "PostgreSQL",
-            "name": "school_net",
-            "password": "Petz2001",
-            "port": 5432,
-            "previewLimit": 50,
-            "server": "localhost",
-            "username": "postgres"
-        }
-    ],
-    "python.pythonPath": "/home/dfranov/.pyenv/versions/venv-school_net/bin/python"
+  "sqltools.connections": [
+    {
+      "askForPassword": false,
+      "database": "school_net",
+      "driver": "PostgreSQL",
+      "name": "school_net",
+      "password": "Petz2001",
+      "port": 5432,
+      "previewLimit": 50,
+      "server": "localhost",
+      "username": "postgres"
+    }
+  ]
+  // "python.pythonPath": "/home/dfranov/.pyenv/versions/venv-school_net/bin/python"
 }
